@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programming Hub — Neon Admin + Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #000;
+    --muted: #bfc7d1;
+    --accent1: #ff4dd2; /* magenta */
+    --accent2: #00f0ff; /* cyan */
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: #fff;
+    font-family: Poppins, system-ui, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* LOGIN CARD */
+  #loginPage {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .login-card {
+    width: 360px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 14px;
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+    text-align: center;
+  }
+
+  .login-card h2 {
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .txt {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color: #fff;
+    outline: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  #loginError {
+    color: #ff8080;
+    height: 18px;
+    margin-top: 8px;
+  }
+
+  /* MAIN DASHBOARD */
+  .main-container {
+    display: none;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .brand .name {
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  .brand .group {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .search input {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color: #fff;
+    outline: none;
+    min-width: 220px;
+  }
+
+  .profile-btn {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(90deg, var(--accent2), var(--accent1));
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* LESSON CARDS GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 8px;
+  }
+
+  .card {
+    position: relative;
+    border-radius: 14px;
+    padding: 18px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    border: 2px solid rgba(255,255,255,0.7); /* white border */
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 22px rgba(255,255,255,0.4), 0 18px 60px rgba(0,0,0,0.7);
+    border-color: #fff;
+  }
+
+  .badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #000;
+    font-size: 18px;
+  }
+
+  .badge.c { background: linear-gradient(135deg,var(--accent2),var(--accent1)); }
+  .badge.cpp { background: linear-gradient(135deg,var(--accent1),var(--accent2)); }
+  .badge.java { background: linear-gradient(135deg,#ffd27a,#ff9b3a); }
+  .badge.py { background: linear-gradient(135deg,#7efc82,#23e29c); }
+
+  .title {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .desc {
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  .outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .outline:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  /* LESSON PAGES */
+  .lesson-page {
+    display: none;
+    padding: 28px;
+    max-width: 900px;
+    margin: 22px auto;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .lesson-page h1 {
+    margin-bottom: 8px;
+  }
+
+  .lesson-page pre {
+    background: #0c0c0c;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+    overflow: auto;
+  }
+
+  .btn-back {
+    margin-top: 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent2), var(--accent1));
+  }
+
+  /* PROFILE MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+  }
+
+  .modal {
+    width: 360px;
+    padding: 20px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .modal h3 {
+    margin-bottom: 8px;
+  }
+
+  .modal .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color: #fff;
+  }
+
+  footer {
+    color: var(--muted);
+    text-align: center;
+    padding: 28px 8px;
+    font-size: 0.9rem;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-card">
+    <h2>Admin Login</h2>
+    <p class="hint">Sign in to open the Neon Dashboard</p>
+    <input id="adminUser" class="txt" placeholder="Username">
+    <input id="adminPass" class="txt" placeholder="Password" type="password">
+    <button class="btn-primary" onclick="login()">Sign in</button>
+    <div id="loginError"></div>
+    <p class="hint">Default: <strong>admin</strong> / <strong>12345</strong></p>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="main-container">
+
+  <header>
+    <div class="brand">
+      <div class="name">Programming Hub</div>
+      <div class="group" id="groupDisplay"></div>
+    </div>
+
+    <div class="controls">
+      <input id="q" placeholder="Search lessons..." oninput="filterCards()">
+      <button class="profile-btn" onclick="openProfile()">Profile</button>
+      <button class="btn-primary" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <section class="grid" id="cards"></section>
+</div>
+
+<!-- LESSON PAGES (C / C++ / Java / Python) -->
+<div id="c-page" class="lesson-page">
+  <h1 style="color:var(--accent2)">C Programming — Sum of Two Digits</h1>
+  <pre>
+#include &lt;stdio.h&gt;
+int main() {
+  int a, b, sum;
+  printf("Enter first number: ");
+  scanf("%d", &a);
+  printf("Enter second number: ");
+  scanf("%d", &b);
+  sum = a + b;
+  printf("Sum = %d\n", sum);
+  return 0;
+}
+  </pre>
+  <button class="btn-back" onclick="closeLesson()">Go back</button>
+</div>
+
+<div id="cpp-page" class="lesson-page">
+  <h1 style="color:var(--accent1)">C++ Programming — Sum of Two Digits</h1>
+  <pre>
+#include &lt;iostream&gt;
+using namespace std;
+int main() {
+  int a,b,sum;
+  cout<<"Enter first number: "; cin>>a;
+  cout<<"Enter second number: "; cin>>b;
+  sum=a+b;
+  cout<<"Sum = "<<sum;
+  return 0;
+}
+  </pre>
+  <button class="btn-back" onclick="closeLesson()">Go back</button>
+</div>
+
+<div id="java-page" class="lesson-page">
+  <h1 style="color:#ffd27a">Java Programming — Sum of Two Digits</h1>
+  <pre>
+import java.util.Scanner;
+public class Main {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.print("Enter first number: ");
+    int a = sc.nextInt();
+    System.out.print("Enter second number: ");
+    int b = sc.nextInt();
+    int sum = a + b;
+    System.out.println("Sum = " + sum);
+  }
+}
+  </pre>
+  <button class="btn-back" onclick="closeLesson()">Go back</button>
+</div>
+
+<div id="python-page" class="lesson-page">
+  <h1 style="color:var(--accent2)">Python Programming — Sum of Two Digits</h1>
+  <pre>
+a = int(input("Enter first number: "))
+b = int(input("Enter second number: "))
+print("Sum =", a + b)
+  </pre>
+  <button class="btn-back" onclick="closeLesson()">Go back</button>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <h3>Profile — Group settings</h3>
+    <input id="groupInput" class="input" placeholder="Enter group name">
+    <input id="tagInput" class="input" placeholder="Tagline (optional)">
+    <button class="btn-primary" onclick="saveProfile()">Save</button>
+    <button class="outline" onclick="closeProfile()">Cancel</button>
+  </div>
+</div>
+
+<footer>© 2025 Programming Hub</footer>
+
+<script>
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = '12345';
+
+const lessons = [
+  {id:'c', title:'C Programming', desc:'Basics, I/O, control flow', page:'c-page', badge:'C'},
+  {id:'cpp', title:'C++ Programming', desc:'OOP, STL, I/O', page:'cpp-page', badge:'C++'},
+  {id:'java', title:'Java Programming', desc:'OOP, classes, methods', page:'java-page', badge:'Java'},
+  {id:'py', title:'Python Programming', desc:'Syntax, scripts, functions', page:'python-page', badge:'Py'},
+];
+
+// LOGIN
+function login() {
+  const user = adminUser.value.trim();
+  const pass = adminPass.value;
+  if(user===ADMIN_USER && pass===ADMIN_PASS){
+    loginPage.style.display='none';
+    document.querySelector('.main-container').style.display='block';
+    renderCards();
+    loadProfile();
+  } else loginError.textContent='Invalid username or password';
+}
+
+// LOGOUT
+function logout() {
+  document.querySelector('.main-container').style.display='none';
+  loginPage.style.display='flex';
+  adminUser.value=''; adminPass.value='';
+}
+
+// RENDER LESSON CARDS
+function renderCards() {
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+  lessons.forEach(l=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="badge ${l.id}">${l.badge}</div>
+        <div>
+          <div class="title">${l.title}</div>
+          <div class="desc">${l.desc}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div style="color:var(--muted);font-size:0.9rem">Beginner • 1 lesson</div>
+        <button class="outline" onclick="openLesson('${l.page}')">Start</button>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+// SEARCH FILTER
+function filterCards() {
+  const q = document.getElementById('q').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>{
+    const title = c.querySelector('.title').textContent.toLowerCase();
+    c.style.display = title.includes(q) ? '' : 'none';
+  });
+}
+
+// LESSON OPEN / CLOSE
+function openLesson(id) {
+  document.querySelector('.main-container').style.display='none';
+  document.querySelectorAll('.lesson-page').forEach(p=>p.style.display='none');
+  document.getElementById(id).style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeLesson() {
+  document.querySelectorAll('.lesson-page').forEach(p=>p.style.display='none');
+  document.querySelector('.main-container').style.display='block';
+}
+
+// PROFILE MODAL
+function openProfile() {
+  modalBackdrop.style.display='flex';
+  groupInput.value = localStorage.getItem('groupName')||'';
+  tagInput.value = localStorage.getItem('groupTag')||'';
+}
+function closeProfile() { modalBackdrop.style.display='none'; }
+function saveProfile() {
+  const g = groupInput.value.trim();
+  const t = tagInput.value.trim();
+  localStorage.setItem('groupName', g);
+  localStorage.setItem('groupTag', t);
+  groupDisplay.textContent = g + (t?` — ${t}`:'');
+  closeProfile();
+}
+function loadProfile() {
+  const g = localStorage.getItem('groupName');
+  const t = localStorage.getItem('groupTag');
+  groupDisplay.textContent = g ? g + (t?` — ${t}`:'') : '';
+}
+
+modalBackdrop.addEventListener('click', e => {
+  if(e.target===modalBackdrop) closeProfile();
+});
+
+</script>
+</body>
+</html>
